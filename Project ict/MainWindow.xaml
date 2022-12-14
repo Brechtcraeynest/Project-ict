@@ -34,5 +34,15 @@
         </GroupBox>
 
         <Label Name="lblcontrols" Height="61" Width="441" FontWeight="Bold"  Content="Duw op spatie om te springen" FontSize="30" Canvas.Left="190" Canvas.Top="163" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Visible"></Label>
+        <GroupBox Header="Elementen in het spel" Canvas.Left="10" Canvas.Top="225" Height="184" Width="770" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <Grid>
+                <Rectangle Name="rectVoorbeeldCoin" Width="40" Fill="Gold" Visibility="Visible" Stroke="Black" Margin="10,10,708,112"/>
+                <Rectangle Name="rectVoorbeeldObstakel" Width="40" Fill="Red" Visibility="Visible" Stroke="Black" Margin="10,54,708,53" RenderTransformOrigin="0.365,0.502" />
+                <Rectangle Name="rectVoorbeeldPlayer" Width="40" Fill="Orange" Visibility="Visible" Stroke="Black" Margin="10,113,708,10" />
+                <Label Content="Dit is een coin, raap deze op om toe te voegen aan het coin totaal" Margin="65,10,0,102" FontSize="23"></Label>
+                <Label Content="Dit is een obstakel, raak deze niet aan!" Margin="65,64,0,47" FontSize="23"></Label>
+                <Label Content="Dit is de player, zorg dat hij niet doodgaat!" Margin="65,114,0,5" FontSize="23"></Label>
+            </Grid>
+        </GroupBox>
     </Canvas>
 </Window>

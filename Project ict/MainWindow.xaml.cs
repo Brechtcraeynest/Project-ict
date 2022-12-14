@@ -42,8 +42,6 @@ namespace ProjectICT
         bool gameover = false;
         int score = 0;
         int cointotal = 0;
-        bool vis = true;
-        bool vis2 = true;
         
 
 
@@ -127,8 +125,7 @@ namespace ProjectICT
 
                 // Zorg dat alle bools en ints gereset zijn
                 springen = false;
-                vis = true;
-                vis2 = true;
+               
                 gameover = false;
                 score = 0;
                 cointotal = 0;
@@ -194,23 +191,20 @@ namespace ProjectICT
 
             
 
-            if (playerHitBox.IntersectsWith(coinHitbox) && vis == true)
+            if (playerHitBox.IntersectsWith(coinHitbox) && rectCoin.Visibility == Visibility.Visible)
               {
                  // Voeg toe aan het cointotaal, zet de rectCoin invisible en de variabele als false
                  cointotal++;
                  rectCoin.Visibility = Visibility.Hidden;
                  serialPort.WriteLine($" S:{score} C:{cointotal}");
-                 vis = false;
-
             }
 
-            if (playerHitBox.IntersectsWith(coinHitbox2) && vis2 == true)
+            if (playerHitBox.IntersectsWith(coinHitbox2) && rectCoin2.Visibility == Visibility.Visible)
               {
                  // Voeg toe aan het cointotaal, zet de rectCoin invisible en de variabele als false
                  cointotal++;
                  serialPort.WriteLine($" S:{score} C:{cointotal}");
                  rectCoin2.Visibility = Visibility.Hidden;
-                 vis2 = false;
             }
             
 
@@ -255,20 +249,18 @@ namespace ProjectICT
                 serialPort.WriteLine($" S:{score} C:{cointotal}");
             }
 
-            if (Canvas.GetLeft(rectCoin) < -50)
+            if (Canvas.GetLeft(rectCoin) < -40)
             {
                 // Zet de rectCoin op de juiste positie en maak ze visible
                 Canvas.SetLeft(rectCoin, 500);
                 rectCoin.Visibility = Visibility.Visible;
-                vis = true;
             }
 
-            if (Canvas.GetLeft(rectCoin2) < -50)
+            if (Canvas.GetLeft(rectCoin2) < -40)
             {
                 // Zet de rectCoin op de juiste positie en maak ze visible
                 Canvas.SetLeft(rectCoin2, 650);
-                rectCoin.Visibility = Visibility.Visible;
-                vis2 = true;               
+                rectCoin.Visibility = Visibility.Visible;            
             }
 
             if (gameover)

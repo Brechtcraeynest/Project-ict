@@ -5,22 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjectICT"
         mc:Ignorable="d"
- Title="Project ICT" Height="450" Width="800">
-    <Canvas Name="myCanvas" Focusable="True" KeyDown="Canvas_KeyDown" KeyUp="Canvas_KeyUp" Background="LightBlue">
+ Title="Project ICT" Height="450" Width="800" ResizeMode="CanMinimize" Closed="Window_Closed">
+    <Canvas Name="myCanvas" Focusable="True" KeyDown="Canvas_KeyDown" KeyUp="Canvas_KeyUp" Background="LightGray">
 
-        <Rectangle Name="background" Height="400" Width="1262" Fill="Aquamarine" />
-        <Rectangle Name="background2" Height="400" Width="1262" Fill="LightGreen" Canvas.Left="1262" />
+        <Rectangle Name="rectAchtergrond" Height="400" Width="1262" Fill="Aquamarine" Visibility="Hidden"/>
+        <Rectangle Name="rectAchtergrond2" Height="400" Width="1262" Fill="LightGreen" Canvas.Left="1262" Visibility="Hidden"/>
 
-        <Rectangle Name="ground" Height="32" Width="800" Fill="Black" Canvas.Top="387" Canvas.Left="0" />
+        <Rectangle Name="rectGrond" Height="32" Width="800" Fill="Black" Canvas.Top="387" Canvas.Left="0" Visibility="Hidden"/>
 
-        <Rectangle Name="player" Height="99" Width="67" Fill="Orange" Canvas.Top="151" Canvas.Left="110" />
-        <Rectangle Name="coin" Height="40" Width="40" Fill="Gold" Canvas.Top="320" Canvas.Left="300" Visibility="Visible"/>
-        <Rectangle Name="coin2" Height="40" Width="40" Fill="Gold" Canvas.Top="320" Canvas.Left="450" Visibility="Visible" />
+        <Rectangle Name="rectPlayer" Height="99" Width="67" Fill="Orange" Canvas.Top="151" Canvas.Left="110" Visibility="Hidden" />
+        <Rectangle Name="rectCoin" Height="40" Width="40" Fill="Gold" Canvas.Top="320" Canvas.Left="300" Visibility="Hidden" />
+        <Rectangle Name="rectCoin2" Height="40" Width="40" Fill="Gold" Canvas.Top="320" Canvas.Left="450" Visibility="Hidden" />
 
-        <Rectangle Name="obstacle" Height="178" Width="50" Fill="Red" Canvas.Top="320" Canvas.Left="721" />
+        <Rectangle Name="rectObstakel" Height="178" Width="50" Fill="Red" Canvas.Top="320" Canvas.Left="721" Visibility="Hidden" />
 
-        <Label Name="scoreText" FontSize="22" FontWeight="Bold" Content="Score: 0" />
-        <Label Name="coinsText" FontSize="22" FontWeight="Bold" Content="Coins: 0" Canvas.Top="30"/>
+        <Label Name="lblScoreText" FontSize="22" FontWeight="Bold" Content="Score: 0" Visibility="Hidden"/>
+        <Label Name="lblCoinsText" FontSize="22" FontWeight="Bold" Content="Coins: 0" Canvas.Top="30" Visibility="Hidden"/>
         <Label Name="lblGameOver" FontSize="60" FontWeight="Bold" Content="GAME OVER" Canvas.Left="221" Canvas.Top="180" Visibility="Hidden"/>
+       
+        
     </Canvas>
 </Window>

@@ -44,7 +44,8 @@ namespace ProjectICT
         int cointotal = 0;
         bool vis = true;
         bool vis2 = true;
-       
+        
+
 
         //integer array die zorgt dat het opstakel een random hoogte heeft
         int[] obstakelPositie = { 320, 310, 300, 305, 315 };
@@ -53,18 +54,20 @@ namespace ProjectICT
         public MainWindow()
         {
             InitializeComponent();
+                //Voeg een extra optie toe aan de combobox
+                cbxPortName.Items.Add("None");
+                //Zet de compoorts erin
+                foreach (string s in SerialPort.GetPortNames())
+                cbxPortName.Items.Add(s);
 
-            
-            
                 //Zet de focus op mycanvas, anders werkt springen niet
                 myCanvas.Focus();
-
                 //Zet het gameEngine event op de game timer tick
                 gameTimer.Tick += gameEngine;
                 // laat de game timer elke 20ms tikken
                 gameTimer.Interval = TimeSpan.FromMilliseconds(20);
-            // start het spel
-                StartGame();
+                // start het spel
+                
             
         }
 
@@ -143,16 +146,20 @@ namespace ProjectICT
   
 
         private void gameEngine(object sender, EventArgs e)
-        {
+        {   
+            //vermijd Magic numbers
+            int bewegenNaarRechts = 12;
+            int bewegenAchtergrond = 3;
+
             // beweeg het karakter naar beneden met de zwaartekracht integer
             Canvas.SetTop(rectPlayer, Canvas.GetTop(rectPlayer) + zwaartekracht);
             // Zorg dat de achtergronden met 3 pixels verplaatsen elke tick
-            Canvas.SetLeft(rectAchtergrond, Canvas.GetLeft(rectAchtergrond) - 3);
-            Canvas.SetLeft(rectAchtergrond2, Canvas.GetLeft(rectAchtergrond2) - 3);
+            Canvas.SetLeft(rectAchtergrond, Canvas.GetLeft(rectAchtergrond) - bewegenAchtergrond);
+            Canvas.SetLeft(rectAchtergrond2, Canvas.GetLeft(rectAchtergrond2) - bewegenAchtergrond);
             // Zorg dat de rectangles met 12 pixels verplaatsen elke tick
-            Canvas.SetLeft(rectObstakel, Canvas.GetLeft(rectObstakel) - 12);
-            Canvas.SetLeft(rectCoin, Canvas.GetLeft(rectCoin) - 12);
-            Canvas.SetLeft(rectCoin2, Canvas.GetLeft(rectCoin2) - 12);
+            Canvas.SetLeft(rectObstakel, Canvas.GetLeft(rectObstakel) - bewegenNaarRechts);
+            Canvas.SetLeft(rectCoin, Canvas.GetLeft(rectCoin) - bewegenNaarRechts);
+            Canvas.SetLeft(rectCoin2, Canvas.GetLeft(rectCoin2) - bewegenNaarRechts);
             // Link score text met score integer
             lblScoreText.Content = $"Score: {score}";
             lblCoinsText.Content = $"Coins: {cointotal}";
@@ -192,6 +199,7 @@ namespace ProjectICT
                  // Voeg toe aan het cointotaal, zet de rectCoin invisible en de variabele als false
                  cointotal++;
                  rectCoin.Visibility = Visibility.Hidden;
+                 serialPort.WriteLine($" S:{score} C:{cointotal}");
                  vis = false;
 
             }
@@ -200,6 +208,7 @@ namespace ProjectICT
               {
                  // Voeg toe aan het cointotaal, zet de rectCoin invisible en de variabele als false
                  cointotal++;
+                 serialPort.WriteLine($" S:{score} C:{cointotal}");
                  rectCoin2.Visibility = Visibility.Hidden;
                  vis2 = false;
             }
@@ -243,6 +252,7 @@ namespace ProjectICT
                 Canvas.SetTop(rectObstakel, obstakelPositie[rand.Next(0, obstakelPositie.Length)]);
                 // Voeg 1 toe aan de score
                 score += 1;
+                serialPort.WriteLine($" S:{score} C:{cointotal}");
             }
 
             if (Canvas.GetLeft(rectCoin) < -50)
@@ -290,6 +300,58 @@ namespace ProjectICT
             Thread.Sleep(200);
             serialPort.WriteLine("");
             serialPort.Dispose();
+        }
+
+        private void cbxPortName_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (serialPort != null)
+            {
+                if (serialPort.IsOpen)
+                    serialPort.Close();
+
+                if (cbxPortName.SelectedItem.ToString() != "None")
+                {
+                    serialPort.PortName = cbxPortName.SelectedItem.ToString();
+                    serialPort.Open();
+                }
+                else
+                {
+                    MessageBox.Show("Kies een COM-poort.", "Fout",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void Startgame_Click(object sender, RoutedEventArgs e)
+        {
+            try {
+
+                    if ((serialPort != null) && (serialPort.IsOpen))
+                    {
+                  
+                    gbxPoort.Visibility = Visibility.Hidden;
+                    gbxStart.Visibility = Visibility.Hidden;
+                    lblcontrols.Visibility = Visibility.Hidden;
+                    StartGame();
+                    
+                    }
+                }
+            catch (Exception ex)
+            { MessageBox.Show($"Fout met het selecteren van een compoort {ex}"); }
+        }
+
+        private void btnTestSerial_Click(object sender, RoutedEventArgs e)
+        {
+            serialPort.WriteLine("Test");
+            var milliseconds = 200;
+            Thread.Sleep(milliseconds);
+            serialPort.WriteLine("est");
+            Thread.Sleep(milliseconds);
+            serialPort.WriteLine("st");
+            Thread.Sleep(milliseconds);
+            serialPort.WriteLine("t");
+            Thread.Sleep(milliseconds);
+            serialPort.WriteLine("");
         }
     }
 }

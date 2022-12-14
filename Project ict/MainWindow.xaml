@@ -33,8 +33,8 @@
             </StackPanel>
         </GroupBox>
 
-        <Label Name="lblcontrols" Height="61" Width="441" FontWeight="Bold"  Content="Duw op spatie om te springen" FontSize="30" Canvas.Left="190" Canvas.Top="163" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Visible"></Label>
-        <GroupBox Header="Elementen in het spel" Canvas.Left="10" Canvas.Top="225" Height="184" Width="770" HorizontalAlignment="Center" VerticalAlignment="Top">
+        <Label Name="lblcontrols" Height="61" Width="440" FontWeight="Bold"  Content="Duw op spatie om te springen" FontSize="30" Canvas.Left="180" Canvas.Top="163" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="Visible"></Label>
+        <GroupBox Header="Elementen in het spel" Canvas.Left="10" Canvas.Top="225" Height="184" Width="770" HorizontalAlignment="Center" VerticalAlignment="Top" Name="gbxTutorial">
             <Grid>
                 <Rectangle Name="rectVoorbeeldCoin" Width="40" Fill="Gold" Visibility="Visible" Stroke="Black" Margin="10,10,708,112"/>
                 <Rectangle Name="rectVoorbeeldObstakel" Width="40" Fill="Red" Visibility="Visible" Stroke="Black" Margin="10,54,708,53" RenderTransformOrigin="0.365,0.502" />
@@ -43,6 +43,8 @@
                 <Label Content="Dit is een obstakel, raak deze niet aan!" Margin="65,64,0,47" FontSize="23"></Label>
                 <Label Content="Dit is de player, zorg dat hij niet doodgaat!" Margin="65,114,0,5" FontSize="23"></Label>
             </Grid>
+            
         </GroupBox>
+        <Label Content="Van: Brecht Craeynest 1EL" Canvas.Left="634" Canvas.Top="382" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="WhiteSmoke"></Label>
     </Canvas>
 </Window>

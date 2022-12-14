@@ -17,6 +17,7 @@ using System.IO.Ports;
 using System.Windows.Threading; // Voeg toe als timer
 using System.Diagnostics.Metrics;
 using System.Threading;
+using Project_ict;
 
 namespace ProjectICT
 {
@@ -24,8 +25,10 @@ namespace ProjectICT
     public partial class MainWindow : Window
     {
         
-        // Maak een nieuwe dispatchertimer aan die gametimer noemt
-        DispatcherTimer gameTimer = new DispatcherTimer(); 
+        // Maak een nieuwe dispatchertimer aan die gametimer noemt en een nieuwe serialPort van de library
+        DispatcherTimer gameTimer = new DispatcherTimer();
+        SerialPort serialPort = new SerialPort();
+
         // Maak Rectangles aan die als hitboxen werken voor de elementen in het project
         Rect playerHitBox;
         Rect grondHitBox;
@@ -33,15 +36,18 @@ namespace ProjectICT
         Rect coinHitbox;
         Rect coinHitbox2;
 
+        //Maak een nieuw random object aan
+        Random rand = new Random();
+
+        // Maak score en coins aan van zelfgemaakte klasses
+        Score score = new Score();
+        Coins coins = new Coins();
+
         // Maak alle variabelen aan die in het project gebruikt worden
-        SerialPort serialPort = new SerialPort();
         bool springen;
         int snelheid = 30;
         int zwaartekracht = 50;
-        Random rand = new Random();
         bool gameover = false;
-        int score = 0;
-        int cointotal = 0;
         
 
 
@@ -54,6 +60,7 @@ namespace ProjectICT
             InitializeComponent();
                 //Voeg een extra optie toe aan de combobox
                 cbxPortName.Items.Add("None");
+
                 //Zet de compoorts erin
                 foreach (string s in SerialPort.GetPortNames())
                 cbxPortName.Items.Add(s);
@@ -64,7 +71,6 @@ namespace ProjectICT
                 gameTimer.Tick += gameEngine;
                 // laat de game timer elke 20ms tikken
                 gameTimer.Interval = TimeSpan.FromMilliseconds(20);
-                // start het spel
                 
             
         }
@@ -94,8 +100,78 @@ namespace ProjectICT
 
         }
 
-        private void StartGame()
+        private void cbxPortName_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (serialPort != null)
+            {   
+                //zorg dat de serial port bruikbaar is en start hem
+                if (serialPort.IsOpen)
+                    serialPort.Close();
+
+                if (cbxPortName.SelectedItem.ToString() != "None")
+                {
+                    serialPort.PortName = cbxPortName.SelectedItem.ToString();
+                    serialPort.Open();
+                }
+                else
+                {
+                    MessageBox.Show("Kies een COM-poort.", "Fout",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void Startgame_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+
+                if ((serialPort != null) && (serialPort.IsOpen))
+                {   
+                    //check of er een poort is geselecteerd en start het spel
+                    gbxTutorial.Visibility = Visibility.Hidden;
+                    gbxPoort.Visibility = Visibility.Hidden;
+                    gbxStart.Visibility = Visibility.Hidden;
+                    lblcontrols.Visibility = Visibility.Hidden;
+                    StartGame();
+
+                }
+            }
+            catch (Exception ex)
+            { MessageBox.Show($"Fout met het selecteren van een compoort {ex}"); }
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            //Zorg dat alles afgesloten wordt als het programma dicht gaat
+            serialPort.WriteLine("Daaaag");
+            Thread.Sleep(200);
+            serialPort.WriteLine("");
+            serialPort.Dispose();
+        }
+
+        private void btnTestSerial_Click(object sender, RoutedEventArgs e)
+        {
+            //Stuur informatie naar het lcd scherm om te testen of het werkt.
+            serialPort.WriteLine("Test");
+            var milliseconds = 200;
+            Thread.Sleep(milliseconds);
+            serialPort.WriteLine("est");
+            Thread.Sleep(milliseconds);
+            serialPort.WriteLine("st");
+            Thread.Sleep(milliseconds);
+            serialPort.WriteLine("t");
+            Thread.Sleep(milliseconds);
+            serialPort.WriteLine("");
+            MessageBox.Show("Test afgelopen");
+        }
+
+
+
+        private void StartGame()
+        {       
+
+                //zorg dat de juist elementen van het spel zichtbaar zijn
                 rectAchtergrond.Visibility = Visibility.Visible;
                 rectAchtergrond2.Visibility = Visibility.Visible;
                 rectCoin.Visibility = Visibility.Visible;
@@ -105,13 +181,14 @@ namespace ProjectICT
                 rectPlayer.Visibility = Visibility.Visible;
                 lblCoinsText.Visibility = Visibility.Visible;
                 lblScoreText.Visibility = Visibility.Visible;
-
+                
+                //Zet gameover als onzichtbaar  
                 lblGameOver.Visibility = Visibility.Hidden;
 
-                Canvas.SetLeft(rectAchtergrond, 0); // Zet de eerste achtergrond op 0
-                Canvas.SetLeft(rectAchtergrond2, 1262); // Zet de 2de achtergrond op 1262
+                Canvas.SetLeft(rectAchtergrond, 0); // Zet de eerste achtergrond op een afstand van 0
+                Canvas.SetLeft(rectAchtergrond2, 1262); // Zet de 2de achtergrond op een afstand van 1262
 
-                Canvas.SetLeft(rectPlayer, 110);
+                Canvas.SetLeft(rectPlayer, 110); //idem
                 Canvas.SetTop(rectPlayer, 140);
 
                 Canvas.SetLeft(rectObstakel, 950);
@@ -123,19 +200,17 @@ namespace ProjectICT
                 Canvas.SetLeft(rectCoin2, 650);
                 Canvas.SetTop(rectCoin2, 320);
 
-                // Zorg dat alle bools en ints gereset zijn
+                // Zorg dat alle bools en variabelen gereset zijn
                 springen = false;
-               
                 gameover = false;
-                score = 0;
-                cointotal = 0;
+                score.Resetten();
+                coins.Resetten();
 
-                // Zet de score en cointaantal klaar en maak de coins zichtbaar
-                lblScoreText.Content = $"Score: {score}";
-                lblCoinsText.Content = $"Coins: {cointotal}";
-
+                // Zet de score en cointaantal klaar
+                lblScoreText.Content = $"Score: {score.Tonen()}";
+                lblCoinsText.Content = $"Coins: {coins.Tonen()}";
                 
-                // Start de game timer en doe gameover weg
+                // Start de game timer 
                 gameTimer.Start();
             
         }
@@ -158,8 +233,8 @@ namespace ProjectICT
             Canvas.SetLeft(rectCoin, Canvas.GetLeft(rectCoin) - bewegenNaarRechts);
             Canvas.SetLeft(rectCoin2, Canvas.GetLeft(rectCoin2) - bewegenNaarRechts);
             // Link score text met score integer
-            lblScoreText.Content = $"Score: {score}";
-            lblCoinsText.Content = $"Coins: {cointotal}";
+            lblScoreText.Content = $"Score: {score.Tonen()}";
+            lblCoinsText.Content = $"Coins: {coins.Tonen()}";
            
 
             // Zorg dat de hitboxen overeenkomen met de wpf elementen
@@ -193,17 +268,17 @@ namespace ProjectICT
 
             if (playerHitBox.IntersectsWith(coinHitbox) && rectCoin.Visibility == Visibility.Visible)
               {
-                 // Voeg toe aan het cointotaal, zet de rectCoin invisible en de variabele als false
-                 cointotal++;
+                // Voeg toe aan het cointotaal, zet de rectCoin invisible en de variabele als false
+                 coins.Toevoegen();
                  rectCoin.Visibility = Visibility.Hidden;
-                 serialPort.WriteLine($" S:{score} C:{cointotal}");
+                 serialPort.WriteLine($" S:{score.Tonen()} C:{coins.Tonen()}");
             }
 
             if (playerHitBox.IntersectsWith(coinHitbox2) && rectCoin2.Visibility == Visibility.Visible)
               {
                  // Voeg toe aan het cointotaal, zet de rectCoin invisible en de variabele als false
-                 cointotal++;
-                 serialPort.WriteLine($" S:{score} C:{cointotal}");
+                 coins.Toevoegen();
+                 serialPort.WriteLine($" S:{score.Tonen()} C:{coins.Tonen()}");
                  rectCoin2.Visibility = Visibility.Hidden;
             }
             
@@ -245,8 +320,8 @@ namespace ProjectICT
                 // Kies een random positie zodat het opstakel hoger of lager is 
                 Canvas.SetTop(rectObstakel, obstakelPositie[rand.Next(0, obstakelPositie.Length)]);
                 // Voeg 1 toe aan de score
-                score += 1;
-                serialPort.WriteLine($" S:{score} C:{cointotal}");
+                score.Toevoegen();
+                serialPort.WriteLine($" S:{score.Tonen} C:{coins.Tonen}");
             }
 
             if (Canvas.GetLeft(rectCoin) < -40)
@@ -286,64 +361,6 @@ namespace ProjectICT
             }
         }
 
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            serialPort.WriteLine("Daaaag");
-            Thread.Sleep(200);
-            serialPort.WriteLine("");
-            serialPort.Dispose();
-        }
 
-        private void cbxPortName_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (serialPort != null)
-            {
-                if (serialPort.IsOpen)
-                    serialPort.Close();
-
-                if (cbxPortName.SelectedItem.ToString() != "None")
-                {
-                    serialPort.PortName = cbxPortName.SelectedItem.ToString();
-                    serialPort.Open();
-                }
-                else
-                {
-                    MessageBox.Show("Kies een COM-poort.", "Fout",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
-
-        private void Startgame_Click(object sender, RoutedEventArgs e)
-        {
-            try {
-
-                    if ((serialPort != null) && (serialPort.IsOpen))
-                    {
-                  
-                    gbxPoort.Visibility = Visibility.Hidden;
-                    gbxStart.Visibility = Visibility.Hidden;
-                    lblcontrols.Visibility = Visibility.Hidden;
-                    StartGame();
-                    
-                    }
-                }
-            catch (Exception ex)
-            { MessageBox.Show($"Fout met het selecteren van een compoort {ex}"); }
-        }
-
-        private void btnTestSerial_Click(object sender, RoutedEventArgs e)
-        {
-            serialPort.WriteLine("Test");
-            var milliseconds = 200;
-            Thread.Sleep(milliseconds);
-            serialPort.WriteLine("est");
-            Thread.Sleep(milliseconds);
-            serialPort.WriteLine("st");
-            Thread.Sleep(milliseconds);
-            serialPort.WriteLine("t");
-            Thread.Sleep(milliseconds);
-            serialPort.WriteLine("");
-        }
     }
 }

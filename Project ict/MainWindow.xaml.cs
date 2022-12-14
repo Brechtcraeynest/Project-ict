@@ -51,10 +51,11 @@ namespace ProjectICT
         int levens = 3;
         int coinpos1 = 500;
         int coinpos2 = 650;
+        int bewegenNaarRechts = 12;
+        int bewegenAchtergrond = 3;
 
         //integer array die zorgt dat het opstakel een random hoogte heeft
         int[] obstakelPositie = { 320, 310, 300, 305, 315 };
-
         
         public MainWindow()
         {
@@ -223,8 +224,7 @@ namespace ProjectICT
         private void gameEngine(object sender, EventArgs e)
         {   
             //vermijd Magic numbers
-            int bewegenNaarRechts = 12;
-            int bewegenAchtergrond = 3;
+
 
             // beweeg het karakter naar beneden met de zwaartekracht integer
             Canvas.SetTop(rectPlayer, Canvas.GetTop(rectPlayer) + zwaartekracht);
@@ -367,8 +367,60 @@ namespace ProjectICT
                 coinpos2 = 650;
             }
 
-            
-               
+            if (score.Tonen() == "0")
+            {
+                bewegenNaarRechts = 12;
+            }
+
+            else if (score.Tonen() == "2")
+            {
+                bewegenNaarRechts = 13;
+            }
+            else if (score.Tonen() == "4")
+            {
+                bewegenNaarRechts = 14;
+            }
+            else if (score.Tonen() == "6")
+            {
+                bewegenNaarRechts = 15;
+            }
+            else if (score.Tonen() == "8")
+            {
+                bewegenNaarRechts = 16;
+            }
+            if (score.Tonen() == "10")
+            {
+                bewegenNaarRechts = 17;
+            }
+            else if (score.Tonen() == "12")
+            {
+                bewegenNaarRechts = 18;
+            }
+            else if (score.Tonen() == "14")
+            {
+                bewegenNaarRechts = 19;
+            }
+            else if (score.Tonen() == "16")
+            {
+                bewegenNaarRechts = 20;
+            }
+            if (score.Tonen() == "18")
+            {
+                bewegenNaarRechts = 21;
+            }
+            else if (score.Tonen() == "20")
+            {
+                bewegenNaarRechts = 22;
+            }
+            else if (score.Tonen() == "22")
+            {
+                bewegenNaarRechts = 23;
+            }
+            else if (score.Tonen() == "24")
+            {
+                bewegenNaarRechts = 24;
+            }
+
 
             if (gameover)
             {

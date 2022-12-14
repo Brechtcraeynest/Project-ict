@@ -21,6 +21,7 @@
 
         <Label Name="lblScoreText" FontSize="22" FontWeight="Bold" Content="Score: 0" Visibility="Hidden"/>
         <Label Name="lblCoinsText" FontSize="22" FontWeight="Bold" Content="Coins: 0" Canvas.Top="30" Visibility="Hidden"/>
+        <Label Name="lblLevens" FontSize="22" FontWeight="Bold" Content="Levens: 0" Canvas.Top="55" Visibility="Hidden"/>
         <Label Name="lblGameOver" FontSize="60" FontWeight="Bold" Content="GAME OVER" Canvas.Left="221" Canvas.Top="180" Visibility="Hidden"/>
 
         <GroupBox Header="Kies je poort" HorizontalAlignment="Left" Canvas.Left="10" Width="770" VerticalAlignment="Top" Height="56" Canvas.Top="10" Name="gbxPoort">

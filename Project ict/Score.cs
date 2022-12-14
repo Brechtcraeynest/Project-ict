@@ -27,5 +27,7 @@ namespace Project_ict
             // zorg dat het commando score.Tonen het totaal terugstuurd.
             return $"{score}";
         }
+
+        
     }
 }

@@ -48,8 +48,9 @@ namespace ProjectICT
         int snelheid = 30;
         int zwaartekracht = 50;
         bool gameover = false;
-        
-
+        int levens = 3;
+        int coinpos1 = 500;
+        int coinpos2 = 650;
 
         //integer array die zorgt dat het opstakel een random hoogte heeft
         int[] obstakelPositie = { 320, 310, 300, 305, 315 };
@@ -181,6 +182,7 @@ namespace ProjectICT
                 rectPlayer.Visibility = Visibility.Visible;
                 lblCoinsText.Visibility = Visibility.Visible;
                 lblScoreText.Visibility = Visibility.Visible;
+                lblLevens.Visibility = Visibility.Visible;
                 
                 //Zet gameover als onzichtbaar  
                 lblGameOver.Visibility = Visibility.Hidden;
@@ -203,13 +205,14 @@ namespace ProjectICT
                 // Zorg dat alle bools en variabelen gereset zijn
                 springen = false;
                 gameover = false;
+                levens = 3;
                 score.Resetten();
                 coins.Resetten();
 
                 // Zet de score en cointaantal klaar
                 lblScoreText.Content = $"Score: {score.Tonen()}";
                 lblCoinsText.Content = $"Coins: {coins.Tonen()}";
-                
+                lblLevens.Content = $"Levens: {levens}";
                 // Start de game timer 
                 gameTimer.Start();
             
@@ -259,27 +262,49 @@ namespace ProjectICT
             if (playerHitBox.IntersectsWith(obstakelHitBox))
             {
                 // Zet gameover als true en stop de gametimer
-                gameover = true;
-                gameTimer.Stop();
+                if(levens <= 1 && rectObstakel.Visibility == Visibility.Visible)
+                {
+                    gameover = true;
+                    gameTimer.Stop();
+                }
+                else if (rectObstakel.Visibility == Visibility.Visible)
+                {
+                    rectObstakel.Visibility = Visibility.Hidden;
+                    levens = levens - 1;
+                    lblLevens.Content = $"Levens: {levens}";
+                    serialPort.WriteLine($" S:{score.Tonen()} C:{coins.Tonen()} L:{levens}");
+                }
+                
 
             }
 
-            
+            if (coinHitbox.IntersectsWith(obstakelHitBox) && rectCoin.Visibility == Visibility.Visible && rectObstakel.Visibility == Visibility.Visible)
+            {
+                //Zorg dat de coins nooit in een obstakel zitten
+                Canvas.SetLeft(rectCoin, coinpos1 + 30);
+            }
+
+            if (coinHitbox2.IntersectsWith(obstakelHitBox) && rectCoin2.Visibility == Visibility.Visible && rectObstakel.Visibility == Visibility.Visible)
+            {
+                //Zorg dat de coins nooit in een obstakel zitten
+                Canvas.SetLeft(rectCoin, coinpos2 + 30);
+            }
+
 
             if (playerHitBox.IntersectsWith(coinHitbox) && rectCoin.Visibility == Visibility.Visible)
               {
                 // Voeg toe aan het cointotaal, zet de rectCoin invisible en de variabele als false
                  coins.Toevoegen();
                  rectCoin.Visibility = Visibility.Hidden;
-                 serialPort.WriteLine($" S:{score.Tonen()} C:{coins.Tonen()}");
+                 serialPort.WriteLine($" S:{score.Tonen()} C:{coins.Tonen()} L:{levens}");
             }
 
             if (playerHitBox.IntersectsWith(coinHitbox2) && rectCoin2.Visibility == Visibility.Visible)
               {
                  // Voeg toe aan het cointotaal, zet de rectCoin invisible en de variabele als false
                  coins.Toevoegen();
-                 serialPort.WriteLine($" S:{score.Tonen()} C:{coins.Tonen()}");
-                 rectCoin2.Visibility = Visibility.Hidden;
+                rectCoin2.Visibility = Visibility.Hidden;
+                serialPort.WriteLine($" S:{score.Tonen()} C:{coins.Tonen()} L:{levens}");
             }
             
 
@@ -321,22 +346,29 @@ namespace ProjectICT
                 Canvas.SetTop(rectObstakel, obstakelPositie[rand.Next(0, obstakelPositie.Length)]);
                 // Voeg 1 toe aan de score
                 score.Toevoegen();
-                serialPort.WriteLine($" S:{score.Tonen} C:{coins.Tonen}");
+                serialPort.WriteLine($" S:{score.Tonen()} C:{coins.Tonen()} L:{levens}");
+                rectObstakel.Visibility = Visibility.Visible;
             }
 
             if (Canvas.GetLeft(rectCoin) < -40)
             {
                 // Zet de rectCoin op de juiste positie en maak ze visible
-                Canvas.SetLeft(rectCoin, 500);
+                
+                Canvas.SetLeft(rectCoin, coinpos1);
                 rectCoin.Visibility = Visibility.Visible;
+                coinpos1 = 500;
             }
 
             if (Canvas.GetLeft(rectCoin2) < -40)
             {
                 // Zet de rectCoin op de juiste positie en maak ze visible
-                Canvas.SetLeft(rectCoin2, 650);
-                rectCoin.Visibility = Visibility.Visible;            
+                Canvas.SetLeft(rectCoin2, coinpos2);
+                rectCoin.Visibility = Visibility.Visible;          
+                coinpos2 = 650;
             }
+
+            
+               
 
             if (gameover)
             {
@@ -350,6 +382,7 @@ namespace ProjectICT
                 // Zorg voor een game over scherm
                 lblScoreText.Content = "   Press Enter to retry";
                 lblCoinsText.Content = "   Press Enter to retry";
+                lblLevens.Content = "   0 LEVENS OVER";
                 lblGameOver.Visibility = Visibility.Visible;
             }
             else

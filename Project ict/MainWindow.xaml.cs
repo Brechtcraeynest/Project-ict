@@ -24,7 +24,7 @@ namespace ProjectICT
    
     public partial class MainWindow : Window
     {
-        
+        //hallo
         // Maak een nieuwe dispatchertimer aan die gametimer noemt en een nieuwe serialPort van de library
         DispatcherTimer gameTimer = new DispatcherTimer();
         SerialPort serialPort = new SerialPort();
@@ -125,8 +125,8 @@ namespace ProjectICT
 
         private void Startgame_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
+           
+            
 
                 if ((serialPort != null) && (serialPort.IsOpen))
                 {   
@@ -138,9 +138,9 @@ namespace ProjectICT
                     StartGame();
 
                 }
-            }
-            catch (Exception ex)
-            { MessageBox.Show($"Fout met het selecteren van een compoort {ex}"); }
+            
+                else
+                { MessageBox.Show($"Fout met het selecteren van een COM-poort"); }
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -153,19 +153,31 @@ namespace ProjectICT
         }
 
         private void btnTestSerial_Click(object sender, RoutedEventArgs e)
-        {
-            //Stuur informatie naar het lcd scherm om te testen of het werkt.
-            serialPort.WriteLine("Test");
-            var milliseconds = 200;
-            Thread.Sleep(milliseconds);
-            serialPort.WriteLine("est");
-            Thread.Sleep(milliseconds);
-            serialPort.WriteLine("st");
-            Thread.Sleep(milliseconds);
-            serialPort.WriteLine("t");
-            Thread.Sleep(milliseconds);
-            serialPort.WriteLine("");
-            MessageBox.Show("Test afgelopen");
+        {   
+            if ((serialPort != null) && (serialPort.IsOpen)) 
+            {
+                //Stuur informatie naar het lcd scherm om te testen of het werkt.
+                serialPort.WriteLine("Tteest");
+                var milliseconds = 400;
+                Thread.Sleep(milliseconds);
+                serialPort.WriteLine("teest");
+                Thread.Sleep(milliseconds);
+                serialPort.WriteLine("eest");
+                Thread.Sleep(milliseconds);
+                serialPort.WriteLine("est");
+                Thread.Sleep(milliseconds);
+                serialPort.WriteLine("st");
+                Thread.Sleep(milliseconds);
+                serialPort.WriteLine("t");
+                Thread.Sleep(milliseconds);
+                serialPort.WriteLine("");
+                MessageBox.Show("Test afgelopen");
+            }
+            else
+            {
+                MessageBox.Show($"Fout met het selecteren van een COM-poort");
+            }     
+            
         }
 
 
@@ -209,11 +221,13 @@ namespace ProjectICT
                 levens = 3;
                 score.Resetten();
                 coins.Resetten();
+                bewegenNaarRechts = 12;
 
                 // Zet de score en cointaantal klaar
                 lblScoreText.Content = $"Score: {score.Tonen()}";
                 lblCoinsText.Content = $"Coins: {coins.Tonen()}";
                 lblLevens.Content = $"Levens: {levens}";
+                serialPort.WriteLine($" S:{score.Tonen()} C:{coins.Tonen()} L:{levens}");
                 // Start de game timer 
                 gameTimer.Start();
             
@@ -223,9 +237,6 @@ namespace ProjectICT
 
         private void gameEngine(object sender, EventArgs e)
         {   
-            //vermijd Magic numbers
-
-
             // beweeg het karakter naar beneden met de zwaartekracht integer
             Canvas.SetTop(rectPlayer, Canvas.GetTop(rectPlayer) + zwaartekracht);
             // Zorg dat de achtergronden met 3 pixels verplaatsen elke tick
@@ -238,7 +249,6 @@ namespace ProjectICT
             // Link score text met score integer
             lblScoreText.Content = $"Score: {score.Tonen()}";
             lblCoinsText.Content = $"Coins: {coins.Tonen()}";
-           
 
             // Zorg dat de hitboxen overeenkomen met de wpf elementen
             playerHitBox = new Rect(Canvas.GetLeft(rectPlayer), Canvas.GetTop(rectPlayer), rectPlayer.Width, rectPlayer.Height);
@@ -246,7 +256,6 @@ namespace ProjectICT
             obstakelHitBox = new Rect(Canvas.GetLeft(rectObstakel), Canvas.GetTop(rectObstakel), rectObstakel.Width, rectObstakel.Height);
             coinHitbox = new Rect(Canvas.GetLeft(rectCoin), Canvas.GetTop(rectCoin), rectCoin.Width, rectCoin.Height);
             coinHitbox2 = new Rect(Canvas.GetLeft(rectCoin2), Canvas.GetTop(rectCoin2), rectCoin2.Width, rectCoin2.Height);
-
 
             if (playerHitBox.IntersectsWith(grondHitBox))
             {
@@ -371,7 +380,6 @@ namespace ProjectICT
             {
                 bewegenNaarRechts = 12;
             }
-
             else if (score.Tonen() == "2")
             {
                 bewegenNaarRechts = 13;
@@ -420,6 +428,23 @@ namespace ProjectICT
             {
                 bewegenNaarRechts = 24;
             }
+            else if (score.Tonen() == "26")
+            {
+                bewegenNaarRechts = 25;
+            }
+            else if (score.Tonen() == "28")
+            {
+                bewegenNaarRechts = 26;
+            }
+            else if (score.Tonen() == "30")
+            {
+                bewegenNaarRechts = 27;
+            }
+
+            //while (Convert.ToInt32(score.Tonen()) % 2 == 0)
+            //{
+            //    bewegenNaarRechts = 12 + (Convert.ToInt32(score.Tonen()) / 2);
+            //}
 
 
             if (gameover)
@@ -432,9 +457,9 @@ namespace ProjectICT
                 rectPlayer.Stroke = Brushes.Red;
                 rectPlayer.StrokeThickness = 1;
                 // Zorg voor een game over scherm
-                lblScoreText.Content = "   Press Enter to retry";
-                lblCoinsText.Content = "   Press Enter to retry";
-                lblLevens.Content = "   0 LEVENS OVER";
+                lblLevens.Content = "DUW OP ENTER OM TE HERSTARTEN";
+                serialPort.WriteLine($"GAME OVER");
+                lblGameOver.Content = $"GAME OVER";
                 lblGameOver.Visibility = Visibility.Visible;
             }
             else

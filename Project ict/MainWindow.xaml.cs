@@ -21,10 +21,8 @@ using Project_ict;
 
 namespace ProjectICT
 {
-   
     public partial class MainWindow : Window
     {
-        //hallo
         // Maak een nieuwe dispatchertimer aan die gametimer noemt en een nieuwe serialPort van de library
         DispatcherTimer gameTimer = new DispatcherTimer();
         SerialPort serialPort = new SerialPort();
@@ -73,8 +71,6 @@ namespace ProjectICT
                 gameTimer.Tick += gameEngine;
                 // laat de game timer elke 20ms tikken
                 gameTimer.Interval = TimeSpan.FromMilliseconds(20);
-                
-            
         }
 
         private void Canvas_KeyDown(object sender, KeyEventArgs e)
@@ -96,10 +92,7 @@ namespace ProjectICT
                 springen = true;
                 snelheid = 15;
                 zwaartekracht = -12;
-                
-               
             }
-
         }
 
         private void cbxPortName_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -125,20 +118,15 @@ namespace ProjectICT
 
         private void Startgame_Click(object sender, RoutedEventArgs e)
         {
-           
-            
-
-                if ((serialPort != null) && (serialPort.IsOpen))
-                {   
-                    //check of er een poort is geselecteerd en start het spel
-                    gbxTutorial.Visibility = Visibility.Hidden;
-                    gbxPoort.Visibility = Visibility.Hidden;
-                    gbxStart.Visibility = Visibility.Hidden;
-                    lblcontrols.Visibility = Visibility.Hidden;
-                    StartGame();
-
-                }
-            
+            if ((serialPort != null) && (serialPort.IsOpen))
+            {   
+                //check of er een poort is geselecteerd en start het spel
+                gbxTutorial.Visibility = Visibility.Hidden;
+                gbxPoort.Visibility = Visibility.Hidden;
+                gbxStart.Visibility = Visibility.Hidden;
+                lblcontrols.Visibility = Visibility.Hidden;
+                StartGame();
+            }
                 else
                 { MessageBox.Show($"Fout met het selecteren van een COM-poort"); }
         }
@@ -177,63 +165,58 @@ namespace ProjectICT
             {
                 MessageBox.Show($"Fout met het selecteren van een COM-poort");
             }     
-            
         }
 
 
 
         private void StartGame()
         {       
-
-                //zorg dat de juist elementen van het spel zichtbaar zijn
-                rectAchtergrond.Visibility = Visibility.Visible;
-                rectAchtergrond2.Visibility = Visibility.Visible;
-                rectCoin.Visibility = Visibility.Visible;
-                rectCoin2.Visibility = Visibility.Visible;
-                rectGrond.Visibility = Visibility.Visible;
-                rectObstakel.Visibility = Visibility.Visible;
-                rectPlayer.Visibility = Visibility.Visible;
-                lblCoinsText.Visibility = Visibility.Visible;
-                lblScoreText.Visibility = Visibility.Visible;
-                lblLevens.Visibility = Visibility.Visible;
+             //zorg dat de juist elementen van het spel zichtbaar zijn
+             rectAchtergrond.Visibility = Visibility.Visible;
+             rectAchtergrond2.Visibility = Visibility.Visible;
+             rectCoin.Visibility = Visibility.Visible;
+             rectCoin2.Visibility = Visibility.Visible;
+             rectGrond.Visibility = Visibility.Visible;
+             rectObstakel.Visibility = Visibility.Visible;
+             rectPlayer.Visibility = Visibility.Visible;
+             lblCoinsText.Visibility = Visibility.Visible;
+             lblScoreText.Visibility = Visibility.Visible;
+             lblLevens.Visibility = Visibility.Visible;
                 
                 //Zet gameover als onzichtbaar  
-                lblGameOver.Visibility = Visibility.Hidden;
+             lblGameOver.Visibility = Visibility.Hidden;
 
-                Canvas.SetLeft(rectAchtergrond, 0); // Zet de eerste achtergrond op een afstand van 0
-                Canvas.SetLeft(rectAchtergrond2, 1262); // Zet de 2de achtergrond op een afstand van 1262
+             Canvas.SetLeft(rectAchtergrond, 0); // Zet de eerste achtergrond op een afstand van 0
+             Canvas.SetLeft(rectAchtergrond2, 1262); // Zet de 2de achtergrond op een afstand van 1262
 
-                Canvas.SetLeft(rectPlayer, 110); //idem
-                Canvas.SetTop(rectPlayer, 140);
+             Canvas.SetLeft(rectPlayer, 110); //idem
+             Canvas.SetTop(rectPlayer, 140);
 
-                Canvas.SetLeft(rectObstakel, 950);
-                Canvas.SetTop(rectObstakel, 310);
+             Canvas.SetLeft(rectObstakel, 950);
+             Canvas.SetTop(rectObstakel, 310);
 
-                Canvas.SetLeft(rectCoin, 500);
-                Canvas.SetTop(rectCoin, 320);
+             Canvas.SetLeft(rectCoin, 500);
+             Canvas.SetTop(rectCoin, 320);
 
-                Canvas.SetLeft(rectCoin2, 650);
-                Canvas.SetTop(rectCoin2, 320);
+             Canvas.SetLeft(rectCoin2, 650);
+             Canvas.SetTop(rectCoin2, 320);
 
-                // Zorg dat alle bools en variabelen gereset zijn
-                springen = false;
-                gameover = false;
-                levens = 3;
-                score.Resetten();
-                coins.Resetten();
-                bewegenNaarRechts = 12;
+             // Zorg dat alle bools en variabelen gereset zijn
+             springen = false;
+             gameover = false;
+             levens = 3;
+             score.Resetten();
+             coins.Resetten();
+             bewegenNaarRechts = 12;
 
-                // Zet de score en cointaantal klaar
-                lblScoreText.Content = $"Score: {score.Tonen()}";
-                lblCoinsText.Content = $"Coins: {coins.Tonen()}";
-                lblLevens.Content = $"Levens: {levens}";
-                serialPort.WriteLine($" S:{score.Tonen()} C:{coins.Tonen()} L:{levens}");
-                // Start de game timer 
-                gameTimer.Start();
-            
+             // Zet de score en cointaantal klaar
+             lblScoreText.Content = $"Score: {score.Tonen()}";
+             lblCoinsText.Content = $"Coins: {coins.Tonen()}";
+             lblLevens.Content = $"Levens: {levens}";
+             serialPort.WriteLine($" S:{score.Tonen()} C:{coins.Tonen()} L:{levens}");
+             // Start de game timer 
+             gameTimer.Start();
         }
-
-  
 
         private void gameEngine(object sender, EventArgs e)
         {   
@@ -283,8 +266,6 @@ namespace ProjectICT
                     lblLevens.Content = $"Levens: {levens}";
                     serialPort.WriteLine($" S:{score.Tonen()} C:{coins.Tonen()} L:{levens}");
                 }
-                
-
             }
 
             if (coinHitbox.IntersectsWith(obstakelHitBox) && rectCoin.Visibility == Visibility.Visible && rectObstakel.Visibility == Visibility.Visible)
@@ -298,7 +279,6 @@ namespace ProjectICT
                 //Zorg dat de coins nooit in een obstakel zitten
                 Canvas.SetLeft(rectCoin, coinpos2 + 30);
             }
-
 
             if (playerHitBox.IntersectsWith(coinHitbox) && rectCoin.Visibility == Visibility.Visible)
               {
@@ -316,7 +296,6 @@ namespace ProjectICT
                 serialPort.WriteLine($" S:{score.Tonen()} C:{coins.Tonen()} L:{levens}");
             }
             
-
             if (springen)
             {
                 // Zet zwaartekracht op -9 zodat de rectPlayer omhoog gaat
@@ -324,6 +303,7 @@ namespace ProjectICT
                 // zet de snelheid wat lager
                 snelheid--;
             }
+
             else
             {
                 // Zet anders zwaartekracht op 12
@@ -334,7 +314,6 @@ namespace ProjectICT
             {
                 springen = false;
             }
-
 
             if (Canvas.GetLeft(rectAchtergrond) < -1262)
             {
@@ -376,76 +355,10 @@ namespace ProjectICT
                 coinpos2 = 650;
             }
 
-            if (score.Tonen() == "0")
+            if (Convert.ToInt32(score.Tonen()) % 2 == 0 )
             {
-                bewegenNaarRechts = 12;
+                bewegenNaarRechts = 12 + (Convert.ToInt32(score.Tonen()) / 2);
             }
-            else if (score.Tonen() == "2")
-            {
-                bewegenNaarRechts = 13;
-            }
-            else if (score.Tonen() == "4")
-            {
-                bewegenNaarRechts = 14;
-            }
-            else if (score.Tonen() == "6")
-            {
-                bewegenNaarRechts = 15;
-            }
-            else if (score.Tonen() == "8")
-            {
-                bewegenNaarRechts = 16;
-            }
-            if (score.Tonen() == "10")
-            {
-                bewegenNaarRechts = 17;
-            }
-            else if (score.Tonen() == "12")
-            {
-                bewegenNaarRechts = 18;
-            }
-            else if (score.Tonen() == "14")
-            {
-                bewegenNaarRechts = 19;
-            }
-            else if (score.Tonen() == "16")
-            {
-                bewegenNaarRechts = 20;
-            }
-            if (score.Tonen() == "18")
-            {
-                bewegenNaarRechts = 21;
-            }
-            else if (score.Tonen() == "20")
-            {
-                bewegenNaarRechts = 22;
-            }
-            else if (score.Tonen() == "22")
-            {
-                bewegenNaarRechts = 23;
-            }
-            else if (score.Tonen() == "24")
-            {
-                bewegenNaarRechts = 24;
-            }
-            else if (score.Tonen() == "26")
-            {
-                bewegenNaarRechts = 25;
-            }
-            else if (score.Tonen() == "28")
-            {
-                bewegenNaarRechts = 26;
-            }
-            else if (score.Tonen() == "30")
-            {
-                bewegenNaarRechts = 27;
-            }
-
-            //while (Convert.ToInt32(score.Tonen()) % 2 == 0)
-            //{
-            //    bewegenNaarRechts = 12 + (Convert.ToInt32(score.Tonen()) / 2);
-            //}
-
 
             if (gameover)
             {
@@ -462,6 +375,7 @@ namespace ProjectICT
                 lblGameOver.Content = $"GAME OVER";
                 lblGameOver.Visibility = Visibility.Visible;
             }
+
             else
             {
                 // Als er geen gameover is zet je alles af
@@ -470,7 +384,5 @@ namespace ProjectICT
                 lblGameOver.Visibility = Visibility.Hidden;
             }
         }
-
-
     }
 }
